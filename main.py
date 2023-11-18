@@ -4,12 +4,6 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 import mysql.connector
 from datetime import datetime
-import requests
-import os
-import re
-import subprocess
-import asyncio
-import base64
 import subprocess
 from datetime import datetime
 from pydantic import BaseModel
@@ -52,18 +46,6 @@ class SQL:
         self.db.close()
 
 sql = SQL()
-
-@app.get("/login")
-def login(request : Request) :
-    return templates.TemplateResponse("./html/login.html", {"request": request})
-
-@app.get("/register")
-def login(request : Request) :
-    return templates.TemplateResponse("./html/register.html", {"request": request})
-
-@app.get("/post")
-def login(request : Request) :
-    return templates.TemplateResponse("./html/post.html", {"request": request})
 
 def getSessionId(request : Request, session_key : str) :
     session_value = request.cookies.get(session_key)
@@ -240,3 +222,6 @@ def insertArticle(request : Request, following_id : str) :
     else : 
         sql.delete(f"DELETE FROM follow WHERE follower_id='{session_id}' AND following_id='{following_id}'")
         return {"result" : "unfollow"}
+
+# 추가 기능
+# 세션 적용, 배포
