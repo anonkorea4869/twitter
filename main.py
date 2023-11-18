@@ -118,6 +118,16 @@ def insertArticle(request : Request, parameter: InsertArticle) :
     except : 
         return {"result" : "fail"}
 
+class UpdateArticle(BaseModel):
+    content: str
+
+@app.put("/api/article/{article_id}")
+def updateArticle(request : Request, parameter: UpdateArticle, article_id : int) :
+    session_id = getSessionId(request, "session")
+
+    sql.update(f"UPDATE article SET content = '{parameter.content}' WHERE idx = {article_id} AND user_id = '{session_id}'")
+    return {"result" : "success"}
+
 @app.delete("/api/article/{article_id}")
 def insertArticle(request : Request, article_id : int) :
     session_id = getSessionId(request, "session")
@@ -146,7 +156,12 @@ def articleLike(request : Request, article_id : int) :
 
 class InsertComment(BaseModel):
     content: str
-    
+
+@app.get("/api/comment/{article_id}")
+def getUserComment(article_id: int) :
+    result = sql.select(f"SELECT user_id, content, time FROM comment WHERE article_id = {article_id} ORDER BY time DESC")
+    return result
+
 @app.post("/api/comment/{article_id}")
 def insertComment(request : Request, parameter: InsertComment, article_id : int) :
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -157,3 +172,20 @@ def insertComment(request : Request, parameter: InsertComment, article_id : int)
         return {"result" : "success"}
     except : 
         return {"result" : "fail"}
+
+class UpdateArticle(BaseModel):
+    content: str
+
+# @app.put("/api/comment/{article_id}")
+# def updateComment(request : Request, parameter: UpdateArticle, article_id : int) :
+#     session_id = getSessionId(request, "session")
+
+#     sql.update(f"UPDATE article SET content = '{parameter.content}' WHERE idx = {article_id} AND user_id = '{session_id}'")
+#     return {"result" : "success"}
+
+# @app.delete("/api/comment/{article_id}")
+# def insertArticle(request : Request, article_id : int) :
+#     session_id = getSessionId(request, "session")
+
+#     sql.delete(f"DELETE FROM article WHERE idx = '{article_id}' AND user_id='{session_id}'")
+#     return {"result" : "success"}
