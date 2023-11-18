@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Form, Request, Response, HTTPException
+from fastapi import FastAPI, Form, Request, Response, HTTPException, Cookie, APIRouter
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -12,6 +12,7 @@ import asyncio
 import base64
 import subprocess
 from datetime import datetime
+from pydantic import BaseModel
 
 app = FastAPI()
 templates = Jinja2Templates(directory='./')
@@ -44,6 +45,9 @@ class SQL:
     def update(self, sql):
         self.insert(sql)
 
+    def delete(self, sql) : 
+        self.insert(sql)
+
     def close(self):
         self.db.close()
 
@@ -61,7 +65,7 @@ def login(request : Request) :
 def login(request : Request) :
     return templates.TemplateResponse("./html/post.html", {"request": request})
 
-def getSession(request : Request, session_key : str) :
+def getSessionId(request : Request, session_key : str) :
     session_value = request.cookies.get(session_key)
 
     if session_value:
@@ -82,7 +86,7 @@ def login(response: Response, id : str, pw : str) :
 
 @app.get("/api/register")
 def login(id : str, pw : str) :
-    result1 = sql.select(f"SELECT count(*) as count FROM user WHERE id='{id}'")
+    result1 = sql.select(f"SELECT COUNT(*) as count FROM user WHERE id='{id}'")
 
     if int(result1[0]['count']) != 0 :
         return {"result" : "fail"}
@@ -90,13 +94,66 @@ def login(id : str, pw : str) :
         sql.insert(f"INSERT INTO user(id, pw) VALUES('{id}', '{pw}')")
         return {"result" : "success"}
 
-@app.get("/api/post")
-def post(request : Request, content : str) :
+@app.get("/api/article")
+def getAllArticle() :
+    result = sql.select(f"SELECT user_id, content, time FROM article ORDER BY time DESC")
+    return result
+
+@app.get("/api/article/{user_id}")
+def getUserArticle(user_id: int) :
+    result = sql.select(f"SELECT user_id, content, time FROM article WHERE user_id = {user_id} ORDER BY time DESC")
+    return result
+
+class InsertArticle(BaseModel):
+    content: str
+
+@app.post("/api/article")
+def insertArticle(request : Request, parameter: InsertArticle) :
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    id = getSession(request, 'session')
+    session_id = getSessionId(request, "session")
 
     try : 
-        sql.insert(f"INSERT INTO post (writter_id, content, time) VALUES('{id}', '{content}', '{current_time}')")
+        sql.insert(f"INSERT INTO article (user_id, content, time) VALUES('{session_id}', '{parameter.content}', '{current_time}')")
+        return {"result" : "success"}
+    except : 
+        return {"result" : "fail"}
+
+@app.delete("/api/article/{article_id}")
+def insertArticle(request : Request, article_id : int) :
+    session_id = getSessionId(request, "session")
+
+    sql.delete(f"DELETE FROM article WHERE idx = '{article_id}' AND user_id='{session_id}'")
+    return {"result" : "success"}
+
+@app.get("/api/article/like/{article_id}")
+def getArticleLike(article_id : int) :
+    result = sql.select(f"SELECT COUNT(*) as count FROM article_like WHERE article_id={article_id}")
+    
+    return {"result" : result[0]['count']}
+
+@app.post("/api/article/like/{article_id}")
+def articleLike(request : Request, article_id : int) :
+    session_id = getSessionId(request, "session")
+
+    result = sql.select(f"SELECT COUNT(*) as count FROM article_like WHERE article_id={article_id} AND like_id='{session_id}'")
+    
+    if result[0]['count'] == 0 :
+        sql.insert(f"INSERT INTO article_like(like_id, article_id) VALUES ('{session_id}', {article_id})")
+        return {"result" : "like"}
+    else : 
+        sql.delete(f"DELETE FROM article_like WHERE article_id={article_id} AND like_id='{session_id}'")
+        return {"result" : "dislike"}
+
+class InsertComment(BaseModel):
+    content: str
+    
+@app.post("/api/comment/{article_id}")
+def insertComment(request : Request, parameter: InsertComment, article_id : int) :
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    session_id = getSessionId(request, "session")
+
+    try : 
+        sql.insert(f"INSERT INTO comment (article_id, user_id, content, time) VALUES({article_id}, '{session_id}', '{parameter.content}', '{current_time}')")
         return {"result" : "success"}
     except : 
         return {"result" : "fail"}
