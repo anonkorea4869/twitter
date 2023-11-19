@@ -7,12 +7,11 @@ from datetime import datetime
 import subprocess
 from datetime import datetime
 from pydantic import BaseModel
+import random
+import string
 
 app = FastAPI()
 templates = Jinja2Templates(directory='./')
-
-# 정적 파일 디렉토리를 설정
-# app.mount("/thumbnail", StaticFiles(directory="/Users/anonkorea4869/Library/Mobile Documents/com~apple~CloudDocs/HTML/code/thumbnail/"), name="thumbnail")
 
 class SQL:
     def __init__(self):
@@ -47,36 +46,61 @@ class SQL:
 
 sql = SQL()
 
+def expiredSession(id) :
+    sql.update(f"UPDATE session SET manual_expired = 1 WHERE session_id = '{id}'")
+
+def getSession(id) :
+    characters = string.ascii_letters + string.digits
+    random_string = ''.join(random.choice(characters) for _ in range(128))
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    sql.insert(f"INSERT INTO session(session_id, session, init_time, last_time) VALUES('{id}', '{random_string}', '{current_time}', '{current_time}')")
+    return random_string
+
 def getSessionId(request : Request, session_key : str) :
     session_value = request.cookies.get(session_key)
 
     if session_value:
-        return session_value
+        result = sql.select(f"SELECT session_id FROM session WHERE session = '{session_value}' AND manual_expired = 0 ORDER BY last_time DESC LIMIT 1")
+        return result[0]['session_id']
     else:
         return {"message": "Session value not found"}
+        
+def checkSession(request : Request, session_key : str) :
+    session_value = request.cookies.get(session_key)
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # sql.select(f"SELECT ")
+    sql.update(f"UPDATE session SET last_time = '{current_time}' WHERE session='{session_value}'")
 
 @app.get("/api/login")
 def login(response: Response, id : str, pw : str) :
     result1 = sql.select(f"SELECT count(*) as count FROM user WHERE id='{id}' AND pw ='{pw}'")
 
     if int(result1[0]['count']) != 0 : # 있으면
-        response.set_cookie(key="session", value=f"{id}")
+        expiredSession(id)
+        session = getSession(id)
+        response.set_cookie(key="session", value=session)
         return {"result": "success"}
     else :
         return {"result" : "fail"}
 
-@app.get("/api/register")
-def login(id : str, pw : str) :
-    result1 = sql.select(f"SELECT COUNT(*) as count FROM user WHERE id='{id}'")
+class Register(BaseModel) :
+    id : str
+    pw : str
 
-    if int(result1[0]['count']) != 0 :
+@app.post("/api/register")
+def register(request : Register) :
+    result = sql.select(f"SELECT COUNT(*) as count FROM user WHERE id='{request.id}'")
+
+    if int(result[0]['count']) != 0 :
         return {"result" : "fail"}
     else : 
-        sql.insert(f"INSERT INTO user(id, pw) VALUES('{id}', '{pw}')")
+        sql.insert(f"INSERT INTO user(id, pw) VALUES('{request.id}', '{request.pw}')")
         return {"result" : "success"}
 
 @app.get("/api/article")
-def getAllArticle() :
+def getAllArticle(request: Request) :
     result = sql.select(f"SELECT * FROM article ORDER BY time DESC")
     return result
 
