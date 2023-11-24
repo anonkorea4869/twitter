@@ -11,7 +11,9 @@ import random
 import string
 
 app = FastAPI()
-templates = Jinja2Templates(directory='./')
+app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
+# app.mount("/js", StaticFiles(directory="frontend/js"), name="js")
+templates = Jinja2Templates(directory='./frontend')
 
 class SQL:
     def __init__(self):
@@ -46,6 +48,10 @@ class SQL:
 
 sql = SQL()
 
+@app.get("/{site}.html")
+def loadSite(request: Request, site: str) :
+    return templates.TemplateResponse(f"./{site}.html", {"request": request})
+
 def expiredSession(id) :
     sql.update(f"UPDATE session SET manual_expired = 1 WHERE session_id = '{id}'")
 
@@ -64,13 +70,13 @@ def getSessionId(request : Request, session_key : str) :
         result = sql.select(f"SELECT session_id FROM session WHERE session = '{session_value}' AND manual_expired = 0 ORDER BY last_time DESC LIMIT 1")
         return result[0]['session_id']
     else:
-        return {"message": "Session value not found"}
+        return {"result": "Session value not found"}
         
 def checkSession(request : Request, session_key : str) :
     session_value = request.cookies.get(session_key)
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # sql.select(f"SELECT ")
+    # 세션 expired 확인
     sql.update(f"UPDATE session SET last_time = '{current_time}' WHERE session='{session_value}'")
 
 @app.get("/api/login")
@@ -248,4 +254,4 @@ def insertArticle(request : Request, following_id : str) :
         return {"result" : "unfollow"}
 
 # 추가 기능
-# 세션 적용, 배포
+# 세션 적용, 배포, 팔로잉 가져오기
