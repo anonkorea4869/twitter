@@ -1,5 +1,3 @@
-let likeCount = 0;
-
 $(document).ready(function () {
     const limit = 2;
     let skip = 0;
@@ -27,9 +25,9 @@ $(document).ready(function () {
                     <div class="post__header">
                         <div class="post__headerText">
                             <h3>
-                                User Name
+                            ${item.user_id}
                                 <span class="post__headerSpecial">
-                                    
+                                ${item.time.replace("T", " ")}
                                 </span>
                             </h3>
                         </div>
@@ -40,8 +38,8 @@ $(document).ready(function () {
             
                     <div class="post__footer">
                         <span class="material-icons" onclick="toggleLike(this)">repeat</span>
-                        <span class="material-icons" onclick="toggleLike(this)">favorite_border</span>
-                        <span id="likeCount">0</span>
+                        <span class="material-icons" onclick="toggleLike(this)">${item.user_liked === 1 ? "favorite" : "favorite_border"}</span>
+                        <span id="likeCount">${item.like_count}</span>
                         <span class="material-icons"> publish </span>
                     </div>
                 </div>
@@ -107,3 +105,32 @@ $(document).ready(function () {
 //         comment_like.innerHTML = likeCount;
 //     }
 // }
+
+
+var tweetForm = document.getElementById('tweet_form'); // form 요소 선택
+
+tweetForm.addEventListener('submit', function(event) { // form에 이벤트 추가
+    event.preventDefault();
+    
+    var content = document.getElementById('tweet_content').value;
+
+    fetch(`/api/article`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: content }),
+        credentials: 'include'
+    })
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        if(data.result === "success") {
+            // alert(data.result);
+            location.href="/frontend/index.html";
+        } else {
+            alert(data.result);
+        }
+    })
+});
