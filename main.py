@@ -79,6 +79,12 @@ def checkSession(request : Request, session_key : str) :
     # 세션 expired 확인
     sql.update(f"UPDATE session SET last_time = '{current_time}' WHERE session='{session_value}'")
 
+@app.get("/api/session")
+def session(request : Request) :
+    session_id = getSessionId(request, "session")
+
+    return {"result" : session_id}
+
 @app.get("/api/login")
 def login(response: Response, id : str, pw : str) :
     result1 = sql.select(f"SELECT count(*) as count FROM user WHERE id='{id}' AND pw ='{pw}'")
@@ -123,11 +129,23 @@ def getAllArticle(request: Request, skip:int, limit: int) :
         LIMIT {skip}, {limit};
     """)
     return result
-    return sql.select(f"SELECT * FROM article")
 
 @app.get("/api/article/{user_id}")
-def getUserArticle(user_id: int) :
-    result = sql.select(f"SELECT * FROM article WHERE user_id = {user_id} ORDER BY time DESC")
+def getAllArticle(request: Request, skip:int, limit: int, user_id: str) :
+    session_id = getSessionId(request, "session")
+    result = sql.select(f"""SELECT A.idx, 
+       A.user_id, 
+       A.content, 
+       A.time, 
+       COUNT(B.idx) AS like_count,
+       MAX(IF(B.like_id = '{session_id}', 1, 0)) AS user_liked
+        FROM article A 
+        LEFT JOIN article_like B ON A.idx = B.article_id
+        WHERE A.user_id = '{user_id}'
+        GROUP BY A.idx, A.user_id, A.content, A.time
+        ORDER BY A.time DESC
+        LIMIT {skip}, {limit};
+    """)
     return result
 
 class InsertArticle(BaseModel):

@@ -1,4 +1,37 @@
-$(document).ready(function () {
+// 현재 URL을 가져옵니다.
+let currentURL = window.location.href;
+// URL을 URLSearchParams 객체로 변환합니다.
+let url = new URL(currentURL);
+// URLSearchParams 객체에서 user_id 매개변수의 값을 가져옵니다.
+var user_id = url.searchParams.get("user_id");
+var session_id;
+
+fetch(`/api/session`, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    credentials: 'include'
+})
+.then(response => {
+    return response.json();
+})
+.then(data => {
+    session_id = data.result;
+
+    if(user_id === null) { // user_id 값이 없는 경우
+        getFeed(session_id);
+    } else if(session_id == user_id) { // user_id 값이 사용자와 같은 경우
+        location.href="/frontend/profile.html";
+    } else {
+        getFeed(user_id);
+    }
+        
+
+})
+    
+
+function getFeed(user_id) {
     const limit = 2;
     let skip = 0;
     let loading = false;
@@ -8,7 +41,7 @@ $(document).ready(function () {
         if (loading || maxItemsReached) return;
         loading = true;
 
-        $.get(`/api/article?skip=${skip}&limit=${limit}`, function (data) {
+        $.get(`/api/article/${user_id}?skip=${skip}&limit=${limit}`, function (data) {
             const itemList = $("#tweetContainer");
             data.forEach(function (item) {
                 // 데이터 값을 row_code 문자열에 동적으로 삽입
@@ -89,7 +122,7 @@ $(document).ready(function () {
             loadItems();
         }
     }
-});
+}
 
 var tweetForm = document.getElementById('tweet_form'); // form 요소 선택
 
