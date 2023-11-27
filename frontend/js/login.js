@@ -1,11 +1,29 @@
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+document.addEventListener('DOMContentLoaded', function() {
+    var loginForm = document.getElementById('loginForm');
 
-    var username = document.getElementById('loginUsername').value;
-    var password = document.getElementById('loginPassword').value;
+    loginForm.addEventListener('submit', function(event) {
+        event.preventDefault();
 
-    console.log('로그인 시도:', username, password);
+        var id = document.getElementById('loginUsername').value;
+        var pw = document.getElementById('loginPassword').value;
 
-    // 로그인 요청
-    //  fetch('/login', { method: 'POST', body: JSON.stringify({ username, password }) })
+        // URL에 쿼리 문자열 추가하여 GET 요청 보내기
+        fetch(`/api/login?id=${id}&pw=${pw}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            if(data.result === "success") {
+                alert(data.result);
+                // location.href="/frontend/login.html";
+            } else {
+                alert(data.result);
+            }
+        })
+    });
 });

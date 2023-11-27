@@ -1,12 +1,32 @@
-document.getElementById('signupForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+document.addEventListener('DOMContentLoaded', function() {
+    var signupForm = document.getElementById('signupForm');
 
-    var username = document.getElementById('signupUsername').value;
-    var email = document.getElementById('signupEmail').value;
-    var password = document.getElementById('signupPassword').value;
+    signupForm.addEventListener('submit', function(event) {
+        event.preventDefault();
 
-    console.log('회원가입 시도:', username, email, password);
+        var id = document.getElementById('signupUsername').value;
+        var pw = document.getElementById('signupPassword').value;
 
-    // 여기에 서버에 회원가입 요청
-    // 예: fetch('/signup', { method: 'POST', body: JSON.stringify({ username, email, password }) })
+        fetch('/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'id': id,
+                'pw': pw
+            })
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            if(data.result == "success") {
+                alert("Register success");
+                location.href="/frontend/login.html";
+            } else {
+                alert(data.result);
+            }
+        })
+    });
 });

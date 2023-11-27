@@ -9,10 +9,10 @@ from datetime import datetime
 from pydantic import BaseModel
 import random
 import string
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
-# app.mount("/js", StaticFiles(directory="frontend/js"), name="js")
 templates = Jinja2Templates(directory='./frontend')
 
 class SQL:
@@ -97,13 +97,15 @@ class Register(BaseModel) :
 
 @app.post("/api/register")
 def register(request : Register) :
-    result = sql.select(f"SELECT COUNT(*) as count FROM user WHERE id='{request.id}'")
-
-    if int(result[0]['count']) != 0 :
-        return {"result" : "fail"}
-    else : 
-        sql.insert(f"INSERT INTO user(id, pw) VALUES('{request.id}', '{request.pw}')")
-        return {"result" : "success"}
+    try :
+        result = sql.select(f"SELECT COUNT(*) as count FROM user WHERE id='{request.id}'")
+        if int(result[0]['count']) != 0 :
+            return {"result": "ID aready exists"}
+        else : 
+            sql.insert(f"INSERT INTO user(id, pw) VALUES('{request.id}', '{request.pw}')")
+            return {"result": "success"}
+    except :
+         return {"result": "ID too long"}
 
 @app.get("/api/article")
 def getAllArticle(request: Request) :
