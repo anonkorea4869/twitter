@@ -19,8 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             if(data.result === "success") {
-                alert(data.result);
-                // location.href="/frontend/login.html";
+                location.href="/frontend/index.html";
             } else {
                 alert(data.result);
             }

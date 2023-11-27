@@ -37,9 +37,9 @@ $(document).ready(function () {
                     </div>
             
                     <div class="post__footer">
-                        <span class="material-icons" onclick="toggleLike(this)">repeat</span>
-                        <span class="material-icons" onclick="toggleLike(this)">${item.user_liked === 1 ? "favorite" : "favorite_border"}</span>
-                        <span id="likeCount">${item.like_count}</span>
+                        <span class="material-icons" onclick="">repeat</span>
+                        <span class="material-icons" id="likeIcon${item.idx}" onclick="updateLike(${item.idx})">${item.user_liked === 1 ? "favorite" : "favorite_border"}</span>
+                        <span id="likeCount${item.idx}">${item.like_count}</span>
                         <span class="material-icons"> publish </span>
                     </div>
                 </div>
@@ -91,22 +91,6 @@ $(document).ready(function () {
     }
 });
 
-// function toggleLike(icon) {
-//     let comment_like = document.getElementById("likeCount")
-//     // 'favorite_border' 아이콘이면 'favorite'로 변경
-//     if (icon.textContent === 'favorite_border') {
-//         icon.textContent = 'favorite';
-//         likeCount++;
-//         comment_like.innerHTML = likeCount;
-//     }
-//     else if (icon.textContent === 'favorite'){
-//         icon.textContent = "favorite_border"
-//         likeCount--;
-//         comment_like.innerHTML = likeCount;
-//     }
-// }
-
-
 var tweetForm = document.getElementById('tweet_form'); // form 요소 선택
 
 tweetForm.addEventListener('submit', function(event) { // form에 이벤트 추가
@@ -134,3 +118,26 @@ tweetForm.addEventListener('submit', function(event) { // form에 이벤트 추�
         }
     })
 });
+
+function updateLike(idx) {
+    // let like_count = document.getElementById("likeCount");
+    let icon = document.getElementById("likeIcon" + idx);
+    let like_count = document.getElementById("likeCount" + idx);
+    
+    fetch(`/api/article/like/${idx}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+    })
+
+    if (icon.textContent === 'favorite_border') {
+        icon.textContent = 'favorite';
+        like_count.innerText = parseInt(like_count.innerText) + 1;
+    }
+    else if (icon.textContent === 'favorite'){
+        icon.textContent = "favorite_border"
+        like_count.innerText = parseInt(like_count.innerText) - 1;
+    }
+}

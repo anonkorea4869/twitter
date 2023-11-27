@@ -109,19 +109,21 @@ def register(request : Register) :
 
 @app.get("/api/article")
 def getAllArticle(request: Request, skip:int, limit: int) :
+    session_id = getSessionId(request, "session")
     result = sql.select(f"""SELECT A.idx, 
        A.user_id, 
        A.content, 
        A.time, 
        COUNT(B.idx) AS like_count,
-       MAX(IF(B.like_id = 'daehun', 1, 0)) AS user_liked
+       MAX(IF(B.like_id = '{session_id}', 1, 0)) AS user_liked
         FROM article A 
         LEFT JOIN article_like B ON A.idx = B.article_id
         GROUP BY A.idx, A.user_id, A.content, A.time
-        ORDER BY A.time DESC;
+        ORDER BY A.time DESC
         LIMIT {skip}, {limit};
     """)
     return result
+    return sql.select(f"SELECT * FROM article")
 
 @app.get("/api/article/{user_id}")
 def getUserArticle(user_id: int) :
