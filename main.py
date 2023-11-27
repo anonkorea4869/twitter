@@ -108,8 +108,8 @@ def register(request : Register) :
          return {"result": "ID too long"}
 
 @app.get("/api/article")
-def getAllArticle(request: Request) :
-    result = sql.select(f"SELECT * FROM article ORDER BY time DESC")
+def getAllArticle(request: Request, skip:int, limit: int) :
+    result = sql.select(f"SELECT * FROM article ORDER BY time DESC LIMIT {skip}, {limit}")
     return result
 
 @app.get("/api/article/{user_id}")

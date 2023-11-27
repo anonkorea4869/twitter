@@ -13,12 +13,16 @@
         integrity="sha512-iBBXm8fw90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
         crossorigin="anonymous"
         />
-    <link rel="stylesheet" href="/frontend/index.css" />
+    <link rel="stylesheet" href="/frontend/css/index.css" />
+    <style type="text/javascript" src="/frontend/js/index.js"></style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
     <!-- sidebar starts -->
     <div class="sidebar">
         <i class="fa-brands fa-x-twitter"></i>
+        <button class="sidebar__tweet">Gachon DB</button>
+
         <div class="sidebarOption active">
             <span class="material-icons"> home </span>
             <h2>Home</h2>
@@ -29,20 +33,20 @@
             <h2>Explore</h2>
         </div>
 
-        <div class="sidebarOption">
+        <!-- <div class="sidebarOption">
             <span class="material-icons"> notifications_none </span>
             <h2>Notifications</h2>
-        </div>
+        </div> -->
 
         <div class="sidebarOption">
             <span class="material-icons"> mail_outline </span>
             <h2>Messages</h2>
         </div>
 
-        <div class="sidebarOption">
+        <!-- <div class="sidebarOption">
             <span class="material-icons"> bookmark_border </span>
             <h2>Lists</h2>
-        </div>
+        </div> -->
 
         <div class="sidebarOption">
             <span class="material-icons"> perm_identity </span>
@@ -53,36 +57,37 @@
             <span class="material-icons"> more_horiz </span>
             <h2>More</h2>
         </div>
-        <button class="sidebar__tweet">Tweet</button>
+        
     </div>
     <!-- sidebar ends -->
 
     <!-- feed stats -->
-    <div class="feed">
+    <div id="feed" class="feed">
         <div class="feed_header">
             <h2>Home</h2>
         </div>
 
-    <!-- tweetbox starts -->
-    <div class="tweetBox">
-        <form onsubmit="addTweet(event)">
-            <div class="tweetbox__input">
-                <img 
-                    src="http://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png" 
-                    alt=""
-                />
-                <input id="tweetInput" type="text" placeholder="어떤 일이 일어나고 있나요?" />
-            </div>
-            <button type="submit" class="tweetBox__tweetButton">트윗</button>
-        </form>
-    </div>
-    <!-- tweetbox ends -->
+        <!-- tweetbox starts -->
+        <div class="tweetBox">
+            <form onsubmit="addTweet(event)">
+                <div class="tweetbox__input">
+                    <img 
+                        src="http://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png" 
+                        alt=""
+                    />
+                    <input id="tweetInput" type="text" placeholder="어떤 일이 일어나고 있나요?" />
+                </div>
+                <button type="submit" class="tweetBox__tweetButton">트윗</button>
+            </form>
+        </div>
+        <!-- tweetbox ends -->
 
-    <!-- 트윗이 표시될 곳 -->
-    <div id="tweetContainer"></div>
+        <!-- 트윗이 표시될 곳 -->
+        <div id="tweetContainer"></div>
 
     </div>
-    <!-- feed ends -->
-    <script src="tweet_upload.js"></script>
+
+    <script src="/frontend/js/index.js"></script>
+
 </body>
 </html>
