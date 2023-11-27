@@ -1,0 +1,171 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    --twitter-color: #333;;
+    --twitter-background: #e6ecf0;
+}
+
+.sidebarOption {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.sidebarOption .material-icons, .fa-twitter {
+    padding: 20px;
+}
+
+.sidebarOption h2 {
+    font-weight: 800;
+    font-size: 20px;
+    margin-right: 20px;
+}
+
+.sidebarOption:hover {
+    background-color: var(--twitter-background);
+    border-radius: 30px;
+    color: var(--twitter-color);
+    transition: color 100ms ease-out;
+}
+
+.sidebarOption.active {
+    color: var(--twitter-color);
+}
+
+.sidebar__tweet {
+    width: 100%;
+    background-color: var(--twitter-color);
+    border: none;
+    color: white;
+    font-weight: 900;
+    border-radius: 30px;
+    height: 50px;
+    margin-top: 20px;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 10px;
+}
+
+.sidebar {
+    border-right: 1px solid var(--twitter-background);
+    flex: 0.2;
+    min-width: 250px;
+    margin-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.fa-x-twitter {
+    color: black;
+    font-size: 30px;
+}
+
+.chatList {
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.chatListItem {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.chatListItem:hover {
+    background-color: #f5f5f5;
+}
+
+.chatListItem img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.chatInfo {
+    flex-grow: 1;
+}
+
+.chatInfo h3 {
+    margin: 0;
+}
+
+.chatWindow {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background-color: #f5f5f5;
+    border-left: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.chatHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.chatHeader h2 {
+    margin: 0;
+    color: #333;
+}
+
+.chatHeader button {
+    background-color: #1da1f2;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+}
+
+.chatMessages {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.chatMessages p {
+    margin: 5px 0;
+}
+
+.chatInput {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.chatInput input {
+    flex-grow: 1;
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.chatInput button {
+    padding: 8px 15px;
+    background-color: #1da1f2;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.createNewChat {
+    margin-top: 10px;
+}

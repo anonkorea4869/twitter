@@ -14,7 +14,6 @@
         crossorigin="anonymous"
         />
     <link rel="stylesheet" href="/frontend/css/profile.css" />
-    <style type="text/javascript" src="/frontend/js/profile.js"></style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
@@ -23,41 +22,26 @@
         <i class="fa-brands fa-x-twitter"></i>
         <button class="sidebar__tweet">Gachon DB</button>
 
-        <div class="sidebarOption active">
+        <div class="sidebarOption active" id="sidebar-home">
             <span class="material-icons">home </span>
             <h2>Home</h2>
         </div>
-
-        <div class="sidebarOption">
+        <div class="sidebarOption" id="sidebar-search">
             <span class="material-icons"> search </span>
             <h2>Explore</h2>
         </div>
-
-        <!-- <div class="sidebarOption">
-            <span class="material-icons"> notifications_none </span>
-            <h2>Notifications</h2>
-        </div> -->
-
-        <div class="sidebarOption">
+        <div class="sidebarOption" id="sidebar-message">
             <span class="material-icons"> mail_outline </span>
             <h2>Messages</h2>
         </div>
-
-        <!-- <div class="sidebarOption">
-            <span class="material-icons"> bookmark_border </span>
-            <h2>Lists</h2>
-        </div> -->
-
-        <div class="sidebarOption">
+        <div class="sidebarOption" id="sidebar-profile">
             <span class="material-icons"> perm_identity </span>
             <h2>Profile</h2>
         </div>
-
-        <div class="sidebarOption">
+        <div class="sidebarOption" id="sidebar-more">
             <span class="material-icons"> more_horiz </span>
             <h2>More</h2>
         </div>
-        
     </div>
     <!-- sidebar ends -->
 
@@ -90,6 +74,7 @@
     </div>
 
     <script src="/frontend/js/profile.js"></script>
+    <script src="/frontend/js/sidebar.js"></script>
 
 </body>
 </html>
