@@ -6,6 +6,23 @@ let url = new URL(currentURL);
 var user_id = url.searchParams.get("user_id");
 var session_id;
 
+function setFollow(user_id) {
+    fetch(`/api/follow/${user_id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+    })
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        document.getElementById("followers-count").innerText = data.follower_count;
+        document.getElementById("following-count").innerText = data.following_count;
+    })
+}
+
 fetch(`/api/session`, {
     method: 'GET',
     headers: {
@@ -20,14 +37,15 @@ fetch(`/api/session`, {
     session_id = data.result;
 
     if(user_id === null) { // user_id 값이 없는 경우
+        setFollow(session_id)
         getFeed(session_id);
     } else if(session_id == user_id) { // user_id 값이 사용자와 같은 경우
         location.href="/frontend/profile.html";
     } else {
+        document.getElementById("follow-button").innerHTML = '<button class="follow-button">Follow</button>';
+        setFollow(user_id)
         getFeed(user_id);
     }
-        
-
 })
     
 
@@ -37,6 +55,7 @@ function getFeed(user_id) {
     let loading = false;
     let maxItemsReached = false; // 최대 아이템 도달 여부
 
+    document.getElementById("user-name").innerText = user_id;
     function loadItems() {
         if (loading || maxItemsReached) return;
         loading = true;

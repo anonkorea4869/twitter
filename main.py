@@ -273,8 +273,17 @@ def articleLike(request : Request, comment_id : int) :
         sql.delete(f"DELETE FROM comment_like WHERE comment_id={comment_id} AND like_id='{session_id}'")
         return {"result" : "dislike"}
 
+@app.get("/api/follow/{user_id}")
+def getFolloweCount(request : Request, user_id : str) :
+    
+    return {"follower_count" : 1, "following_count" : 2}
+
+    follower_count = sql.select(f"SELECT COUNT(*) FROM follow WHERE follower_id = '{user_id}'")
+    following_count = sql.select(f"SELECT COUNT(*) as following_count FROM follow WHERE following_id = '{user_id}'")
+    return {"follower_count" : 2, "following_count" : 1}
+
 @app.post("/api/follow/{following_id}")
-def insertArticle(request : Request, following_id : str) :
+def follow(request : Request, following_id : str) :
     session_id = getSessionId(request, "session")
 
     result = sql.select(f"SELECT COUNT(*) as count FROM follow WHERE follower_id={session_id} AND following_id='{following_id}'")
@@ -285,6 +294,3 @@ def insertArticle(request : Request, following_id : str) :
     else : 
         sql.delete(f"DELETE FROM follow WHERE follower_id='{session_id}' AND following_id='{following_id}'")
         return {"result" : "unfollow"}
-
-# 추가 기능
-# 세션 적용, 배포, 팔로잉 가져오기
