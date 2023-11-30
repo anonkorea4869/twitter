@@ -1,15 +1,23 @@
+keyword_parse= document.getElementById('search_keyword');
 
+// 현재 URL을 가져옵니다.
+let currentURL = window.location.href;
+// URL을 URLSearchParams 객체로 변환합니다.
+let url = new URL(currentURL);
+// URLSearchParams 객체에서 user_id 매개변수의 값을 가져옵니다.
+var keyword = url.searchParams.get("keyword");
 
-let search_button = document.getElementById('search_button');
+if(keyword === null) { // user_id 값이 없는 경우
+    keyword = ""
+} else {
+    keyword_parse.value=keyword;
+}
 
-search_button.addEventListener('click', function() {
+$(document).ready(function () {
     const limit = 10;
     let skip = 0;
     let loading = false;
     let maxItemsReached = false; // 최대 아이템 도달 여부
-
-
-    keyword = document.getElementById("search_keyword").value;
 
     function loadItems() {
         if (loading || maxItemsReached) return;
@@ -17,9 +25,7 @@ search_button.addEventListener('click', function() {
 
         $.get(`/api/explore/${keyword}?skip=${skip}&limit=${limit}`, function (data) {
             const itemList = $("#tweetContainer");
-
             data.forEach(function (item) {
-                alert(1);
                 // 데이터 값을 row_code 문자열에 동적으로 삽입
                 const row = `
                 <div class="post">
@@ -39,7 +45,7 @@ search_button.addEventListener('click', function() {
                 </div>
             </div>
                 `;
-        alert(row);
+
         itemList.append(row); // 생성된 row를 itemList에 추가
     });
 
@@ -84,3 +90,10 @@ search_button.addEventListener('click', function() {
         }
     }
 });
+
+let search_button = document.getElementById('search_button');
+
+search_button.addEventListener('click', function() {
+   
+    location.href = "keyword_parse.value";
+})
