@@ -294,3 +294,15 @@ def follow(request : Request, following_id : str) :
     else : 
         sql.delete(f"DELETE FROM follow WHERE follower_id='{session_id}' AND following_id='{following_id}'")
         return {"result" : "unfollow"}
+
+@app.get("/api/explore")
+def getAllUserId(request : Request, skip: int, limit: int) :
+    result = sql.select(f"SELECT id FROM user ORDER BY id LIMIT {skip}, {limit}")
+
+    return result
+
+@app.get("/api/explore/{keyword}")
+def getUserIdForKeyword(request : Request, keyword: str, skip: int, limit: int) :
+    result = sql.select(f"SELECT id FROM user WHERE id LIKE '%{keyword}%' ORDER BY id LIMIT {skip}, {limit}")
+
+    return result

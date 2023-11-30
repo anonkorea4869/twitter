@@ -1,0 +1,247 @@
+/* Basic Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+/* 사이바 시작 */
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+
+body {
+  --twitter-color: #50b7f5;
+  --twitter-background: #e6ecf0;
+
+}
+
+.sidebarOption {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.sidebarOption .material-icons, .fa-twitter {
+  padding: 20px;
+}
+
+.sidebarOption h2 {
+  font-weight: 800;
+  font-size: 20px;
+  margin-right: 20px;
+}
+
+.sidebarOption:hover {
+  background-color: var(--twitter-background);
+  border-radius: 30px;
+  color: var(--twitter-color);
+  transition: color 100ms ease-out;
+}
+
+.sidebarOption.active {
+  color: var(--twitter-color);
+}
+
+.sidebar__tweet {
+  width: 100%;
+  background-color: var(--twitter-color);
+  border: none;
+  color: white;
+  font-weight: 900;
+  border-radius: 30px;
+  height: 50px;
+  margin-top: 20px;
+}
+
+body {
+  display: flex;
+  height: 100vh;
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 10px;
+}
+
+.sidebar {
+  border-right: 1px solid var(--twitter-background);
+  flex: 0.2;
+  min-width: 250px;
+  margin-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.fa-x-twitter {
+  color: black;
+  font-size: 30px;
+}
+/* 사이바 끝 */
+
+
+
+/* Main container styling */
+.main-container {
+  width: 60%;
+  margin: 0 auto; /* Center the main container */
+  overflow: hidden; /* Clearfix for floated children */
+}
+
+/* Post section styling */
+.post-container {
+  float: left;
+  width: 70%;
+  padding: 20px;
+  
+}
+
+/* Comment section styling */
+.comment-container {
+  float: right;
+  width: 30%;
+  padding: 20px;
+  background-color: #f8f8f8;
+}
+
+/* ... 기존 스타일 ... */
+
+/* 좋아요 버튼 스타일 */
+.like-button {
+  cursor: pointer;
+  color: #333;
+}
+
+/* 좋아요 상태일 때의 스타일 */
+.like-button.liked {
+  color: #e0245e; /* Twitter 좋아요 색상 */
+  cursor: pointer;
+}
+
+.post-actions {
+  /* 행동 버튼들을 한 줄에 표시 */
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 10px; /* 버튼 사이의 간격 */
+}
+
+/* 게시물 이미지 스타일링 */
+.post-image img {
+  width: 100%; /* 이미지의 너비를 부모 요소에 맞춥니다. */
+  height: auto; /* 이미지의 높이를 자동으로 설정하여 비율을 유지합니다. */
+  border-radius: 8px; /* 이미지에 둥근 모서리 효과를 추가 */
+}
+
+/* 게시물 내용 스타일링 */
+.post-content p {
+  font-size: 16px; /* 텍스트 크기를 조절합니다. */
+  color: #333; /* 텍스트 색상을 지정합니다. */
+  margin-bottom: 10px; /* 단락 아래 여백을 추가합니다. */
+}
+
+/* 게시물 액션 버튼 스타일링 */
+.post-actions {
+  display: flex; /* 좋아요와 공유 버튼을 가로로 나열합니다. */
+  gap: 10px; /* 버튼 사이의 간격 */
+}
+
+.like-button, #shareButton {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #1DA1F2; /* 예시 색상 */
+  color: white;
+}
+
+.like-button.liked {
+  background-color: #e0245e; /* 좋아요 상태일 때 색상 */
+}
+
+/* 댓글 섹션 스타일링 */
+
+.comment-container {
+  display: none;
+}
+
+.comment-container h2 {
+  margin-bottom: 10px;
+}
+
+.comment {
+  margin-bottom: 5px; /* 댓글 간 여백 */
+}
+
+#commentForm {
+  margin-bottom: 20px;
+}
+
+#commentInput {
+  padding: 10px;
+  margin-right: 10px;
+  width: 70%;
+  border: 1px solid #ddd;
+}
+
+#commentForm button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #1DA1F2;
+  color: white;
+  cursor: pointer;
+}
+
+#commentList .comment {
+  background-color: #f8f8f8;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+
+  .post-content p {
+    font-size: 14px; /* 모바일 화면에서 텍스트 크기 조정 */
+  }
+
+.like-button, #shareButton {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #1DA1F2; /* 예시 색상 */
+  color: white;
+}
+
+.like-button.liked {
+  background-color: #e0245e; /* 좋아요 상태일 때 색상 */
+}
+
+#shareButton {
+  background-color: #1DA1F2; /* 공유 버튼 색상 */
+}
+
+/* 버튼 호버 효과 */
+.like-button:hover, #shareButton:hover {
+  opacity: 0.9;
+}
+
+/* Clear floats */
+.main-container::after {
+  content: "";
+  display: table;
+  clear: both;
+  
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .post-container,
+  .comment-container {
+    float: none;
+    width: 100%;
+    padding: 10px;
+    
+  }
+}
+
+

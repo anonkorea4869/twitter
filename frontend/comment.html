@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <link rel="stylesheet" href="/frontend/css/comment.css">
+  <title>tiwtter</title>
+</head>
+<body>
+   <!-- sidebar starts -->
+   <div class="sidebar">
+    <i class="fa-brands fa-x-twitter"></i>
+    <div class="sidebarOption active">
+        <span class="material-icons"> home </span>
+        <h2>Home</h2>
+    </div>
+
+    <div class="sidebarOption">
+        <span class="material-icons"> search </span>
+        <h2>Explore</h2>
+    </div>
+
+    <div class="sidebarOption">
+        <span class="material-icons"> notifications_none </span>
+        <h2>Notifications</h2>
+    </div>
+
+    <div class="sidebarOption">
+        <span class="material-icons"> mail_outline </span>
+        <h2>Messages</h2>
+    </div>
+
+    <div class="sidebarOption">
+        <span class="material-icons"> bookmark_border </span>
+        <h2>Lists</h2>
+    </div>
+
+    <div class="sidebarOption">
+        <span class="material-icons"> perm_identity </span>
+        <h2>Profile</h2>
+    </div>
+
+    <div class="sidebarOption">
+        <span class="material-icons"> more_horiz </span>
+        <h2>More</h2>
+    </div>
+    <button class="sidebar__tweet">Tweet</button>
+</div>
+<!-- sidebar ends -->
+
+  <div class="main-container">
+    <div class="post-container">
+      <!-- 게시물 제목 -->
+      <div class="post-title">
+        <h1>``</h1>
+      </div>
+      <!-- 게시물 이미지 -->
+      <div class="post-image">
+        <img src="https://www.imwood.co.kr/news/photo/202110/26213_50252_518.jpg" alt="게시물 이미지">
+      </div>
+      <!-- 게시물 내용 -->
+      <div class="post-content">
+        <p></p>
+      </div>
+      <!-- 게시물 액션 (좋아요, 공유) -->
+      <div class="post-actions">
+        <span class="like-button" data-liked="false">좋아요</span>
+        <button id="shareButton">공유</button>
+        <button id="toggleCommentButton">댓글 보기/숨기기</button>
+      </div>
+    </div>
+    <!-- 댓글 컨테이너 -->
+    <div class="comment-container">
+      <h2>댓글</h2>
+      <form id="commentForm">
+        <input type="text" id="commentInput" placeholder="댓글을 입력하세요">
+        <button type="submit">댓글 달기</button>
+      </form>
+      <div id="commentList">
+        <!-- 서버로부터 불러온 댓글이 여기에 추가됩니다 -->
+      </div>
+    </div>
+  </div>
+  
+  
+
+  <script src="/frontend/js/comment.js"></script> 
+</body>
+</html>

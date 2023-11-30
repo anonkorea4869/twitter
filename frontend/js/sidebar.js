@@ -6,7 +6,7 @@ home.addEventListener('click', function() {
 
 let search = document.getElementById('sidebar-search');
 search.addEventListener('click', function() {
-    alert("미완성")
+    location.href="/frontend/explore.html"
     // 다른 동작을 수행하려면 이곳에 코드를 추가하세요.
 });
 
