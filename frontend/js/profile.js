@@ -7,7 +7,7 @@ var user_id = url.searchParams.get("user_id");
 var session_id;
 
 function setFollow(user_id) {
-    fetch(`/api/follow/${user_id}`, {
+    fetch(`/api/follow/count/${user_id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -18,8 +18,8 @@ function setFollow(user_id) {
         return response.json();
     })
     .then(data => {
-        document.getElementById("followers-count").innerText = data.follower_count;
-        document.getElementById("following-count").innerText = data.following_count;
+        document.getElementById("followers_div").innerHTML = ('<a href="/frontend/follower.html?user_id=' + user_id + '"><span class="followers-count">' + data.follower_count + " Followers</span>")
+        document.getElementById("followings_div").innerHTML = ('<a href="/frontend/following.html?user_id=' + user_id + '"><span class="followers-count">' + data.following_count + " Followings</span>")
     })
 }
 

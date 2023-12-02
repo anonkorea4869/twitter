@@ -273,14 +273,23 @@ def articleLike(request : Request, comment_id : int) :
         sql.delete(f"DELETE FROM comment_like WHERE comment_id={comment_id} AND like_id='{session_id}'")
         return {"result" : "dislike"}
 
-@app.get("/api/follow/{user_id}")
-def getFolloweCount(request : Request, user_id : str) :
+@app.get("/api/follow/count/{user_id}")
+def getFollowCount(request : Request, user_id : str) :
     
-    return {"follower_count" : 1, "following_count" : 2}
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="0000",
+        database="twitter"
+    )
+    cursor = db.cursor(dictionary=True)
+    cursor.execute(f"SELECT COUNT(*) as follower_count FROM follow WHERE follower_id ='{user_id}'")
+    data1 = cursor.fetchall()
+    cursor.execute(f"SELECT COUNT(*) as following_count FROM follow WHERE following_id ='{user_id}'")
+    data2 = cursor.fetchall()
+    cursor.close()
 
-    follower_count = sql.select(f"SELECT COUNT(*) FROM follow WHERE follower_id = '{user_id}'")
-    following_count = sql.select(f"SELECT COUNT(*) as following_count FROM follow WHERE following_id = '{user_id}'")
-    return {"follower_count" : 2, "following_count" : 1}
+    return {"follower_count" : data1[0]['follower_count'], "following_count" : data2[0]['following_count']}
 
 @app.get("/api/follow/check/{user_id}")
 def followed(request : Request, user_id : str) :
@@ -301,6 +310,18 @@ def follow(request : Request, following_id : str) :
     else : 
         sql.delete(f"DELETE FROM follow WHERE follower_id='{session_id}' AND following_id='{following_id}'")
         return {"result" : "unfollow"}
+
+@app.get("/api/follow/follower/{user_id}")
+def followed(request : Request, user_id: str) :
+    result = sql.select(f"SELECT follower_id FROM follow WHERE following_id='{user_id}'")
+
+    return {"result" : result}
+
+@app.get("/api/follow/following/{user_id}")
+def followed(request : Request, user_id: str) :
+    result = sql.select(f"SELECT following_id FROM follow WHERE follower_id='{user_id}'")
+
+    return {"result" : result}
 
 @app.get("/api/explore")
 def getAllUserId(request : Request, skip: int, limit: int) :
