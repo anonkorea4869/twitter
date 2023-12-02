@@ -42,15 +42,31 @@ fetch(`/api/session`, {
     } else if(session_id == user_id) { // user_id 값이 사용자와 같은 경우
         location.href="/frontend/profile.html";
     } else {
-        document.getElementById("follow-button").innerHTML = '<button class="follow-button">Follow</button>';
-        setFollow(user_id)
-        getFeed(user_id);
+        fetch(`/api/follow/check/${user_id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include'
+        })
+        .then(response2 => {
+            return response2.json();
+        })
+        .then(data2 => {
+            if(data2.result == 0) {
+                document.getElementById("follow-button").innerHTML = '<button class="follow-button" onclick="follow(\'' + user_id + '\')">Follow</button>';
+            } else {
+                document.getElementById("follow-button").innerHTML = '<button class="follow-button" style="background-color:#333" onclick="follow(\'' + user_id + '\')">Unfollow</button>';
+            }
+            setFollow(user_id)
+            getFeed(user_id);
+        })
+
     }
 })
     
-
 function getFeed(user_id) {
-    const limit = 2;
+    const limit = 10;
     let skip = 0;
     let loading = false;
     let maxItemsReached = false; // 최대 아이템 도달 여부
@@ -191,4 +207,16 @@ function updateLike(idx) {
         icon.textContent = "favorite_border"
         like_count.innerText = parseInt(like_count.innerText) - 1;
     }
+}
+
+function follow(user_id) {
+    fetch(`/api/follow/${user_id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+    })
+
+    location.href = "/frontend/profile.html?user_id=" + user_id
 }

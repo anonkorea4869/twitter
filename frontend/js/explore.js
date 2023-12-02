@@ -39,7 +39,7 @@ $(document).ready(function () {
                 <div class="post__body">
                     <div class="post__header">
                         <div class="post__headerText">
-                            <h3>${item.id}</h3>
+                            <a href="/frontend/profile.html?user_id=${item.id}">${item.id}</a>
                         </div>
                     </div>          
                 </div>
@@ -94,6 +94,5 @@ $(document).ready(function () {
 let search_button = document.getElementById('search_button');
 
 search_button.addEventListener('click', function() {
-   
-    location.href = "keyword_parse.value";
+    location.href = "keyword_parse.value"; // 이동이 안됨
 })

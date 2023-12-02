@@ -282,11 +282,18 @@ def getFolloweCount(request : Request, user_id : str) :
     following_count = sql.select(f"SELECT COUNT(*) as following_count FROM follow WHERE following_id = '{user_id}'")
     return {"follower_count" : 2, "following_count" : 1}
 
+@app.get("/api/follow/check/{user_id}")
+def followed(request : Request, user_id : str) :
+    session_id = getSessionId(request, "session")
+    result = sql.select(f"SELECT count(*) as is_follwed FROM follow WHERE follower_id='{session_id}' AND following_id='{user_id}'")
+
+    return {"result" : result[0]['is_follwed']}
+
 @app.post("/api/follow/{following_id}")
 def follow(request : Request, following_id : str) :
     session_id = getSessionId(request, "session")
 
-    result = sql.select(f"SELECT COUNT(*) as count FROM follow WHERE follower_id={session_id} AND following_id='{following_id}'")
+    result = sql.select(f"SELECT COUNT(*) as count FROM follow WHERE follower_id='{session_id}' AND following_id='{following_id}'")
     
     if result[0]['count'] == 0 :
         sql.insert(f"INSERT INTO follow(follower_id, following_id) VALUES ('{session_id}', '{following_id}')")
