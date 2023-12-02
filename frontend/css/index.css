@@ -165,8 +165,17 @@ body {
 
 .post__footer {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     margin-top: 10px;
+    margin-left:70%;
+}
+
+.material-icons {
+    cursor : pointer;
+}
+
+.like {
+    padding:0% 30% 0% 5%;
 }
 
 .post__badge {

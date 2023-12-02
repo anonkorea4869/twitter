@@ -37,10 +37,10 @@ $(document).ready(function () {
                     </div>
             
                     <div class="post__footer">
-                        <span class="material-icons" onclick="">repeat</span>
                         <span class="material-icons" id="likeIcon${item.idx}" onclick="updateLike(${item.idx})">${item.user_liked === 1 ? "favorite" : "favorite_border"}</span>
-                        <span id="likeCount${item.idx}">${item.like_count}</span>
-                        <span class="material-icons"> publish </span>
+                        <span class="like" id="likeCount${item.idx}">${item.like_count}</span>
+                        <span class="material-icons" onclick="comment(${item.idx})">add_comment</span>
+
                     </div>
                 </div>
             </div>
@@ -139,4 +139,8 @@ function updateLike(idx) {
         icon.textContent = "favorite_border"
         like_count.innerText = parseInt(like_count.innerText) - 1;
     }
+}
+
+function comment(idx) {
+    location.href="/frontend/comment.html?idx=" + idx
 }

@@ -10,6 +10,7 @@ from pydantic import BaseModel
 import random
 import string
 from fastapi.responses import JSONResponse
+import hashlib
 
 app = FastAPI()
 app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
@@ -87,6 +88,7 @@ def session(request : Request) :
 
 @app.get("/api/login")
 def login(response: Response, id : str, pw : str) :
+    pw = hashlib.sha256(pw.encode() + b'db').hexdigest()
     result1 = sql.select(f"SELECT count(*) as count FROM user WHERE id='{id}' AND pw ='{pw}'")
 
     if int(result1[0]['count']) != 0 : # 있으면
@@ -108,7 +110,9 @@ def register(request : Register) :
         if int(result[0]['count']) != 0 :
             return {"result": "ID aready exists"}
         else : 
-            sql.insert(f"INSERT INTO user(id, pw) VALUES('{request.id}', '{request.pw}')")
+            pw = hashlib.sha256(pw.encode() + b'db').hexdigest()
+            sql.insert(f"INSERT INTO user(id, pw) VALUES('{request.id}', '{pw}')")
+            # return {"result" : pw}
             return {"result": "success"}
     except :
          return {"result": "ID too long"}
