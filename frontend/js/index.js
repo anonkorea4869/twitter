@@ -1,5 +1,7 @@
+
+
 $(document).ready(function () {
-    const limit = 2;
+    const limit = 10;
     let skip = 0;
     let loading = false;
     let maxItemsReached = false; // 최대 아이템 도달 여부
@@ -40,7 +42,7 @@ $(document).ready(function () {
                         <span class="material-icons" id="likeIcon${item.idx}" onclick="updateLike(${item.idx})">${item.user_liked === 1 ? "favorite" : "favorite_border"}</span>
                         <span class="like" id="likeCount${item.idx}">${item.like_count}</span>
                         <span class="material-icons" onclick="comment(${item.idx})">add_comment</span>
-
+                        <span class="comment">${item.comment_count}</span>
                     </div>
                 </div>
             </div>
@@ -142,5 +144,5 @@ function updateLike(idx) {
 }
 
 function comment(idx) {
-    location.href="/frontend/comment.html?idx=" + idx
+    location.href="/frontend/comment.html?idx=" +idx 
 }

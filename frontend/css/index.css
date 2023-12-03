@@ -178,6 +178,10 @@ body {
     padding:0% 30% 0% 5%;
 }
 
+.comment {
+    padding:0% 10% 0% 5%;
+}
+
 .post__badge {
     font-size: 14px !important;
     color: var(--twitter-color);

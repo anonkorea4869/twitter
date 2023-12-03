@@ -124,13 +124,33 @@ def getAllArticle(request: Request, skip:int, limit: int) :
        A.user_id, 
        A.content, 
        A.time, 
-       COUNT(B.idx) AS like_count,
+       COUNT(DISTINCT C.idx) AS comment_count,
+       COUNT(DISTINCT B.idx) AS like_count,
        MAX(IF(B.like_id = '{session_id}', 1, 0)) AS user_liked
         FROM article A 
         LEFT JOIN article_like B ON A.idx = B.article_id
+        LEFT JOIN comment C ON A.idx = C.article_id
         GROUP BY A.idx, A.user_id, A.content, A.time
         ORDER BY A.time DESC
         LIMIT {skip}, {limit};
+    """)
+    return result
+
+@app.get("/api/article2")
+def getAllArticle(request: Request, idx: int) :
+    session_id = getSessionId(request, "session")
+
+    result = sql.select(f"""SELECT A.idx, 
+       A.user_id, 
+       A.content, 
+       A.time, 
+       COUNT(DISTINCT C.idx) AS comment_count,
+       COUNT(DISTINCT B.idx) AS like_count,
+       MAX(IF(B.like_id = '{session_id}', 1, 0)) AS user_liked
+        FROM article A 
+        LEFT JOIN article_like B ON A.idx = B.article_id
+        LEFT JOIN comment C ON A.idx = C.article_id
+        WHERE A.idx={idx}
     """)
     return result
 
@@ -141,10 +161,12 @@ def getAllArticle(request: Request, skip:int, limit: int, user_id: str) :
        A.user_id, 
        A.content, 
        A.time, 
-       COUNT(B.idx) AS like_count,
+       COUNT(DISTINCT C.idx) AS comment_count,
+       COUNT(DISTINCT B.idx) AS like_count,
        MAX(IF(B.like_id = '{session_id}', 1, 0)) AS user_liked
         FROM article A 
         LEFT JOIN article_like B ON A.idx = B.article_id
+        LEFT JOIN comment C ON A.idx = C.article_id
         WHERE A.user_id = '{user_id}'
         GROUP BY A.idx, A.user_id, A.content, A.time
         ORDER BY A.time DESC
@@ -213,8 +235,22 @@ def articleLike(request : Request, article_id : int) :
         return {"result" : "dislike"}
 
 @app.get("/api/comment/{article_id}")
-def getUserComment(article_id: int) :
-    result = sql.select(f"SELECT * FROM comment WHERE article_id = {article_id} ORDER BY time DESC")
+def getComment(request: Request, skip:int, limit: int, article_id: int) :
+    session_id = getSessionId(request, "session")
+
+    result = sql.select(f"""SELECT A.idx, 
+       A.user_id, 
+       A.content, 
+       A.time, 
+       COUNT(B.idx) AS like_count,
+       MAX(IF(B.like_id = '{session_id}', 1, 0)) AS user_liked
+        FROM comment A 
+        LEFT JOIN comment_like B ON A.idx = B.comment_id
+        WHERE A.article_id = {article_id}
+        GROUP BY A.idx, A.user_id, A.content, A.time
+        ORDER BY A.time DESC
+        LIMIT {skip}, {limit};
+    """)
     return result
 
 class InsertComment(BaseModel):
@@ -265,11 +301,11 @@ def getCommentLikeCount(comment_id : int) :
     return {"result" : result[0]['count']}
 
 @app.post("/api/comment/like/{comment_id}")
-def articleLike(request : Request, comment_id : int) :
+def insertCommentLike(request : Request, comment_id : int) :
     session_id = getSessionId(request, "session")
 
     result = sql.select(f"SELECT COUNT(*) as count FROM comment_like WHERE comment_id={comment_id} AND like_id='{session_id}'")
-    
+    # return result
     if result[0]['count'] == 0 :
         sql.insert(f"INSERT INTO comment_like(comment_id, like_id) VALUES ({comment_id}, '{session_id}')")
         return {"result" : "like"}

@@ -88,6 +88,7 @@ body {
     padding: 15px 20px;
 }
 
+
 .feed_header_h2 {
     font-size: 20px;
     font-weight: 800;
@@ -140,7 +141,7 @@ body {
     border-radius: 30px;
     width: 80px;
     height: 40px;
-    margin-top: 20px;
+    /* margin-top: 20px; */
     margin-left: auto;
 }
 
@@ -170,8 +171,16 @@ body {
     margin-left:70%;
 }
 
+.material-icons {
+    cursor : pointer;
+}
+
 .like {
     padding:0% 30% 0% 5%;
+}
+
+.comment {
+    padding:0% 10% 0% 5%;
 }
 
 .post__badge {

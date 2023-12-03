@@ -37,6 +37,7 @@ fetch(`/api/session`, {
     session_id = data.result;
 
     if(user_id === null) { // user_id 값이 없는 경우
+        user_id = session_id
         setFollow(session_id)
         getFeed(session_id);
     } else if(session_id == user_id) { // user_id 값이 사용자와 같은 경우
@@ -105,10 +106,10 @@ function getFeed(user_id) {
                     </div>
             
                     <div class="post__footer">
-                        <span class="material-icons" onclick="">repeat</span>
-                        <span class="material-icons" id="likeIcon${item.idx}" onclick="updateLike(${item.idx})">${item.user_liked === 1 ? "favorite" : "favorite_border"}</span>
-                        <span id="likeCount${item.idx}">${item.like_count}</span>
-                        <span class="material-icons"> publish </span>
+                    <span class="material-icons" id="likeIcon${item.idx}" onclick="updateLike(${item.idx})">${item.user_liked === 1 ? "favorite" : "favorite_border"}</span>
+                    <span class="like" id="likeCount${item.idx}">${item.like_count}</span>
+                    <span class="material-icons" onclick="comment(${item.idx})">add_comment</span>
+                    <span class="comment">${item.comment_count}</span>
                     </div>
                 </div>
             </div>
@@ -219,4 +220,7 @@ function follow(user_id) {
     })
 
     location.href = "/frontend/profile.html?user_id=" + user_id
+}
+function comment(idx) {
+    location.href="/frontend/comment.html?user_id=" + user_id + "&idx=" +idx
 }

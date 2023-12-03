@@ -43,7 +43,7 @@ function sendMessage() {
     chatMessagesByUser[username].push(`You: ${message}`);
 
     // Display the updated messages in the chat window
-    openChat(username);
+    // openChat(username);
 
     // Clear the input field
     messageInput.value = '';
