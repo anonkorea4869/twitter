@@ -49,9 +49,9 @@ class SQL:
 
 sql = SQL()
 
-@app.get("/{site}.html")
-def loadSite(request: Request, site: str) :
-    return templates.TemplateResponse(f"./{site}.html", {"request": request})
+# @app.get("/{site}.html")
+# def loadSite(request: Request, site: str) :
+#     return templates.TemplateResponse(f"./{site}.html", {"request": request})
 
 def expiredSession(id) :
     sql.update(f"UPDATE session SET manual_expired = 1 WHERE session_id = '{id}'")
@@ -110,12 +110,11 @@ def register(request : Register) :
         if int(result[0]['count']) != 0 :
             return {"result": "ID aready exists"}
         else : 
-            pw = hashlib.sha256(pw.encode() + b'db').hexdigest()
+            pw = hashlib.sha256(request.pw.encode() + b'db').hexdigest()
             sql.insert(f"INSERT INTO user(id, pw) VALUES('{request.id}', '{pw}')")
-            # return {"result" : pw}
             return {"result": "success"}
     except :
-         return {"result": "ID too long"}
+         return {"result": "fail"}
 
 @app.get("/api/article")
 def getAllArticle(request: Request, skip:int, limit: int) :
@@ -146,11 +145,16 @@ def getAllArticle(request: Request, idx: int) :
        A.time, 
        COUNT(DISTINCT C.idx) AS comment_count,
        COUNT(DISTINCT B.idx) AS like_count,
-       MAX(IF(B.like_id = '{session_id}', 1, 0)) AS user_liked
+       CASE WHEN EXISTS (
+            SELECT 1 FROM article_like
+            WHERE article_id = A.idx AND like_id = '{session_id}'
+       ) THEN 1 ELSE 0 END AS user_liked
         FROM article A 
         LEFT JOIN article_like B ON A.idx = B.article_id
         LEFT JOIN comment C ON A.idx = C.article_id
-        WHERE A.idx={idx}
+        WHERE A.idx = {idx}
+        GROUP BY A.idx, A.user_id, A.content, A.time;
+
     """)
     return result
 
@@ -329,7 +333,7 @@ def getFollowCount(request : Request, user_id : str) :
     data2 = cursor.fetchall()
     cursor.close()
 
-    return {"follower_count" : data1[0]['follower_count'], "following_count" : data2[0]['following_count']}
+    return {"follower_count" : data2[0]['following_count'], "following_count" : data1[0]['follower_count']}
 
 @app.get("/api/follow/check/{user_id}")
 def followed(request : Request, user_id : str) :
@@ -363,14 +367,20 @@ def followed(request : Request, user_id: str) :
 
     return {"result" : result}
 
+# @app.get("/api/explore/keyword")
+# def getAllUserId(request : Request, skip: int, limit: int) :
+#     result = sql.select(f"SELECT id FROM user ORDER BY id LIMIT {skip}, {limit}")
+
+#     return result
+
 @app.get("/api/explore")
-def getAllUserId(request : Request, skip: int, limit: int) :
-    result = sql.select(f"SELECT id FROM user ORDER BY id LIMIT {skip}, {limit}")
+def explore(request : Request) :
+    result = sql.select(f"SELECT id FROM user")
 
     return result
 
 @app.get("/api/explore/{keyword}")
-def getUserIdForKeyword(request : Request, keyword: str, skip: int, limit: int) :
-    result = sql.select(f"SELECT id FROM user WHERE id LIKE '%{keyword}%' ORDER BY id LIMIT {skip}, {limit}")
+def explore(request : Request, keyword: str) :
+    result = sql.select(f"SELECT id FROM user")
 
     return result
